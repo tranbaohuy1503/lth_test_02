@@ -1,0 +1,99 @@
+cabal-version:      3.0
+name:               tank-battle
+version:            0.1.0.0
+synopsis:           Multiplayer Tactical 3D Hero Tank Battle Arena (Client-Server Realtime Grid Game)
+description:        Do an cuoi ky mon Lap trinh ham - Multiplayer Tactical 3D Hero Tank Battle Arena
+                    Thiet ke theo 5 chuyen de bai giang mon Lap trinh ham (ADT, Monad, Concurrency, STM, Networking, Graphics).
+                    [Luu y ve Module Am Thanh Client.Audio]: Su dung cac thu vien he thong/ngoai duoc phep
+                    (process, directory, filepath, binary) de tong hop am thanh RIFF/WAV va phat am thanh
+                    khong chan (non-blocking) qua green thread forkIO.
+license:            BSD-3-Clause
+author:             Nhom 5 Thanh Vien
+maintainer:         student@university.edu.vn
+category:           Game
+build-type:         Simple
+
+common shared-properties
+    default-language:   Haskell2010
+    default-extensions: BangPatterns
+    if os(windows)
+        extra-libraries: winmm
+    ghc-options:        -Wall
+                        -Wcompat
+                        -Wincomplete-record-updates
+                        -Wincomplete-uni-patterns
+                        -Wredundant-constraints
+
+library
+    import:             shared-properties
+    hs-source-dirs:     src
+    exposed-modules:    Types
+                      , GameLogic
+                      , Protocol
+                      , Server.State
+                      , Server.Network
+                      , Server.Tick
+                      , Server.Supervisor
+                      , AI
+                      , Client.Audio
+                      , Client.UI
+    build-depends:      base >= 4.14 && < 5
+                      , bytestring >= 0.10
+                      , containers >= 0.6
+                      , network >= 3.1
+                      , stm >= 2.5
+                      , async >= 2.2
+                      , random >= 1.2
+                      , gloss >= 1.13
+                      , directory >= 1.3
+                      , filepath >= 1.4
+                      , process >= 1.6
+                      , binary >= 0.8
+
+executable tank-server
+    import:             shared-properties
+    main-is:            Server/Main.hs
+    hs-source-dirs:     src
+    other-modules:      Types
+                      , GameLogic
+                      , Protocol
+                      , Server.State
+                      , Server.Network
+                      , Server.Tick
+                      , Server.Supervisor
+                      , AI
+    build-depends:      base >= 4.14 && < 5
+                      , bytestring >= 0.10
+                      , containers >= 0.6
+                      , network >= 3.1
+                      , stm >= 2.5
+                      , async >= 2.2
+                      , random >= 1.2
+    ghc-options:        -threaded
+                        -rtsopts
+                        "-with-rtsopts=-N"
+
+executable tank-client
+    import:             shared-properties
+    main-is:            Client/Main.hs
+    hs-source-dirs:     src
+    other-modules:      Types
+                      , GameLogic
+                      , Protocol
+                      , Server.Network
+                      , Client.Audio
+                      , Client.UI
+    build-depends:      base >= 4.14 && < 5
+                      , bytestring >= 0.10
+                      , containers >= 0.6
+                      , network >= 3.1
+                      , stm >= 2.5
+                      , async >= 2.2
+                      , gloss >= 1.13
+                      , directory >= 1.3
+                      , filepath >= 1.4
+                      , process >= 1.6
+                      , binary >= 0.8
+    ghc-options:        -threaded
+                        -rtsopts
+                        "-with-rtsopts=-N"
